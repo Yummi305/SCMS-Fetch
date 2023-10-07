@@ -32,22 +32,9 @@ catkin_package(
     robot_controllers
     robot_controllers_interface
   LIBRARIES
-
+    fetch_gazebo_plugin
   INCLUDE_DIRS
     include
-)
-
-add_library(fetch_gazebo_plugin src/plugin.cpp)
-target_link_libraries(fetch_gazebo_plugin
-  ${catkin_LIBRARIES}
-  ${GAZEBO_LIBRARIES}
-)
-
-install(
-  TARGETS fetch_gazebo_plugin
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
 )
 
 install(
@@ -67,3 +54,4 @@ install(
   DIRECTORY config include launch robots worlds models
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
+
