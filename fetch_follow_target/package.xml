@@ -26,7 +26,14 @@
   <depend>gazebo_ros</depend>
   <depend>robot_controllers</depend>
   <depend>robot_controllers_interface</depend>
+
+  <depend>roscpp</depend>
+  <depend>std_msgs</depend>
   <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>tf</depend>
+  <exec_depend>turtlebot3_description</exec_depend>
 
   <exec_depend>actionlib</exec_depend>
   <exec_depend>control_msgs</exec_depend>

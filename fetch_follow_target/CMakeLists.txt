@@ -11,6 +11,12 @@ find_package(catkin
     gazebo_ros
     robot_controllers
     robot_controllers_interface
+    roscpp
+    std_msgs
+    sensor_msgs
+    geometry_msgs
+    nav_msgs
+    tf
 )
 
 include_directories(
@@ -31,10 +37,31 @@ catkin_package(
     gazebo_ros
     robot_controllers
     robot_controllers_interface
+    roscpp 
+    std_msgs 
+    sensor_msgs 
+    geometry_msgs 
+    nav_msgs 
+    tf
   LIBRARIES
     fetch_gazebo_plugin
   INCLUDE_DIRS
     include
+)
+
+################################################################################
+# Install
+################################################################################
+install(TARGETS turtlebot3_drive
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+install(DIRECTORY include/${PROJECT_NAME}/
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+)
+
+install(DIRECTORY launch models rviz worlds 
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
 install(
