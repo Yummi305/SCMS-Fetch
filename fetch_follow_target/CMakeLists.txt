@@ -32,7 +32,7 @@ catkin_package(
     robot_controllers
     robot_controllers_interface
   LIBRARIES
-    fetch_gazebo_plugin
+
   INCLUDE_DIRS
     include
 )
