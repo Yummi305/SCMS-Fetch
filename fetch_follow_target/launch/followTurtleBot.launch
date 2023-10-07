@@ -7,8 +7,6 @@
   <arg name="gui" default="true"/>
   <arg name="headless" default="false"/>
 
-  <!-- Change robot to teleop -->
-  <arg name="teleop_topic" default="/robot1/cmd_vel"/>  
 
   <!-- Start Gazebo with a blank world -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
@@ -34,9 +32,5 @@
     </include>
   </group>
 
-  <!-- Start controller teleop -->
-  <node pkg="joy" type="joy_node" name="joy_node"/>
-  <node name="guider_joy_teleop" pkg="fetch_robot_path_follow" type="fetch_robot_path_follow-guider_joy_teleop" args="-d $(find fetch_robot_path_follow)" output="screen" respawn="true">
-      <remap from="/cmd_vel" to="$(arg teleop_topic)"/>
-  </node>
+
 </launch>
