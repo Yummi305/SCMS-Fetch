@@ -1,16 +1,5 @@
-/**
- * @file guider_follow.h
- * @author Ajal Singh
- * @brief Fetch robot follows the guider robot by a distance of 1m
- * @version 0.1
- * @date 2020-10-03
- * 
- * @copyright Copyright (c) 2020
- * 
- */
-
-#ifndef GUIDER_FOLLOW_H
-#define GUIDER_FOLLOW_H
+#ifndef FOLLOW_TARGET_H
+#define FOLLOW_TARGET_H
 
 #include "ros/ros.h"
 
@@ -23,11 +12,11 @@
 #include <chrono>
 #include <vector>
 
-class GuiderFollow
+class FollowTarget
 {
 public:
-    GuiderFollow(ros::NodeHandle nh);
-    ~GuiderFollow();
+    FollowTarget(ros::NodeHandle nh);
+    ~FollowTarget();
 
     void markerCallback(const geometry_msgs::Vector3StampedPtr &msg);
     void laserCallBack(const sensor_msgs::LaserScanConstPtr &msg);

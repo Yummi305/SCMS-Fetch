@@ -1,10 +1,10 @@
-#include "../include/FetchRobotPathFollow/guider_follow.h"
+#include "follow_target.h"
 
-GuiderFollow::GuiderFollow(ros::NodeHandle nh)
+FollowTarget::FollowTarget(ros::NodeHandle nh)
     : nh_(nh)
 {
-  marker_sub_ = nh_.subscribe("/aruco_single/position", 1000, &GuiderFollow::markerCallback, this);
-  laser_sub_ = nh_.subscribe("/base_scan_raw", 100, &GuiderFollow::laserCallBack, this);
+  marker_sub_ = nh_.subscribe("/aruco_single/position", 1000, &FollowTarget::markerCallback, this);
+  laser_sub_ = nh_.subscribe("/base_scan_raw", 100, &FollowTarget::laserCallBack, this);
 
   vel_pub_ = nh_.advertise<geometry_msgs::Twist>("/cmd_vel", 1);
 
@@ -18,18 +18,18 @@ GuiderFollow::GuiderFollow(ros::NodeHandle nh)
   search_reported_ = false;
 }
 
-GuiderFollow::~GuiderFollow()
+FollowTarget::~FollowTarget()
 {
 }
 
-void GuiderFollow::markerCallback(const geometry_msgs::Vector3StampedPtr &msg)
+void FollowTarget::markerCallback(const geometry_msgs::Vector3StampedPtr &msg)
 {
-  // inform user of guider dtection
+  // Indicate that a target has been found
   if (!marker_.detected)
   {
     marker_.detected = true;
     search_reported_ = false;
-    ROS_INFO_STREAM("Guider Detected!");
+    ROS_INFO_STREAM("Target Found.");
     sweep_complete_ = false;
   }
 
@@ -47,7 +47,7 @@ void GuiderFollow::markerCallback(const geometry_msgs::Vector3StampedPtr &msg)
     twistMsg_.angular.z = 0;
     if (!marker_.reached)
     {
-      ROS_INFO_STREAM("Guider is stationary");
+      ROS_INFO_STREAM("Target is stationary.");
       marker_.reached = true;
     }
   }
@@ -93,7 +93,7 @@ void GuiderFollow::markerCallback(const geometry_msgs::Vector3StampedPtr &msg)
   start_time_ = ros::Time::now();
 }
 
-void GuiderFollow::laserCallBack(const sensor_msgs::LaserScanConstPtr &msg)
+void FollowTarget::laserCallBack(const sensor_msgs::LaserScanConstPtr &msg)
 {
   obstacle_detected_ = laserDetection_.detectObtacle(msg);
   laser_readings_ = laserDetection_.getLaserReading(msg);
@@ -131,7 +131,7 @@ void GuiderFollow::laserCallBack(const sensor_msgs::LaserScanConstPtr &msg)
   }
 }
 
-void GuiderFollow::stop()
+void FollowTarget::stop()
 {
   while (ros::ok)
   {
