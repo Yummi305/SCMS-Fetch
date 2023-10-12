@@ -1,4 +1,4 @@
-#include "../include/FetchRobotPathFollow/guider_joy_teleop.h"
+#include "guider_joy_teleop.h"
 
 GuiderJoyTeleop::GuiderJoyTeleop(ros::NodeHandle nh)
     :nh_(nh)

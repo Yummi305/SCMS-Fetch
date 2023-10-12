@@ -1,4 +1,4 @@
-#include "../include/FetchRobotPathFollow/environmentSensing.h"
+#include "environmentSensing.h"
 
 EnvironmentSensing::EnvironmentSensing(ros::NodeHandle nh) : nh_(nh)
 {
@@ -27,3 +27,7 @@ void EnvironmentSensing::laserCallBack(const sensor_msgs::LaserScanConstPtr &msg
     laser_readings_ = laserDetection_.getLaserReading(msg);
     //ROS_INFO_STREAM(laser_readings_);
 }
+
+
+
+
