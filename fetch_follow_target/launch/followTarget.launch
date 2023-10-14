@@ -1,0 +1,45 @@
+<launch>
+
+  <env name="GAZEBO_MODEL_PATH" value="$(find fetch_gazebo)/models:$(optenv GAZEBO_MODEL_PATH)" />
+  
+  <!-- FetchBot Launch Parameters -->
+  <arg name="x" default="0.0" />
+  <arg name="y" default="0.0" />
+  <arg name="z" default="0.0" />
+  <arg name="yaw" default="-1.57" />
+  <arg name="robot" default="fetch"/>
+  <arg name="debug" default="false"/>
+  <arg name="gui" default="true"/>
+  <arg name="headless" default="false"/>
+
+    <!-- Start Gazebo with a blank world -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="debug" value="$(arg debug)" />
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="paused" value="false"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="headless" value="$(arg headless)"/>
+    <arg name="world_name" value="$(find fetch_follow_target)/worlds/simWorld.world"/>
+  </include>
+
+  <!-- Launch Fetch Robot as "robot" -->
+  <include file="$(find fetch_gazebo)/launch/include/$(arg robot).launch.xml">
+    <arg name="x" value="$(arg x)" />
+    <arg name="y" value="$(arg y)" />
+    <arg name="z" value="$(arg z)" />
+    <arg name="yaw" value="$(arg yaw)" />
+  </include>
+
+<!--
+  <arg name="teleop_topic" default="turtleBot/cmd/vel"/>
+  -->
+
+  <!-- Spawn Turtlebot using namespace turtleBot-->
+  <group ns="turtleBot">
+    <include file="$(find fetch_follow_target)/launch/turtleBotSpawn.launch">
+      <arg name="model" default="$(env TURTLEBOT3_MODEL)" doc="model type [burger, waffle, waffle_pi]"/>
+    </include>
+  </group>
+
+</launch>
+
