@@ -1,19 +1,17 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>fetch_follow_target</name>
-  <version>0.9.2</version>
-  <description>
-    Gazebo package for Fetch.
-  </description>
-  <author>Michael Ferguson</author>
-  <maintainer email="narora@fetchrobotics.com">Niharika Arora</maintainer>
-  <maintainer email="selliott@fetchrobotics.com">Sarah Elliott</maintainer>
-  <maintainer email="csaldanha@fetchrobotics.com">Carl Saldanha</maintainer>
-  <maintainer email="erelson@fetchrobotics.com">Eric Relson</maintainer>
-  <maintainer email="opensource@fetchrobotics.com">Fetch Robotics Open Source Team</maintainer>
+  <version>1.0.0</version>
+  <description>The Fetch Follow Target package</description>
 
-  <license>BSD</license>
-  <url>http://ros.org/wiki/fetch_gazebo</url>
+  <!-- One maintainer tag required, multiple allowed, one person per tag -->
+  <maintainer email="daniel.mcmahon3434@gmail.com">Dan McMahon</maintainer>
+  <maintainer email="TODO@DENNIS.com">Dennis</maintainer>
+  <maintainer email="TODO@JEN.com">Jen</maintainer>
+
+  <license>BSD, MIT, Boost Software License, GPLv2, GPLv3, LPGv2.1, LPGv3</license>
+
+
 
   <buildtool_depend>catkin</buildtool_depend>
 

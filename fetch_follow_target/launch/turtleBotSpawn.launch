@@ -1,24 +1,16 @@
 <launch>
-<!--this file is used for testing the turtle bot moevemt aka debugging-->
-<!--Spawn turtlebot3-->
+
+<!--Spawn turtlebot3 from turtlebot repository-->
   <arg name="model" default="$(env TURTLEBOT3_MODEL)" doc="model type [burger, waffle, waffle_pi]"/>
   <arg name="x_pos" default="0.0"/>
   <arg name="y_pos" default="0.0"/>
   <arg name="z_pos" default="0.0"/>
 
-  <!--Create an empty world-->
-  <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="paused" value="false"/>
-    <arg name="use_sim_time" value="true"/>
-    <arg name="gui" value="true"/>
-    <arg name="headless" value="false"/>
-    <arg name="debug" value="false"/>
-    <arg name="world_name" value="$(find fetch_follow_target)/worlds/simWorld.world"/>
-  </include>
-
   <param name="robot_description" command="$(find xacro)/xacro --inorder $(find turtlebot3_description)/urdf/turtlebot3_$(arg model).urdf.xacro" />
 
+<!--include gazebo node to spawn model in gazebo-->
   <node pkg="gazebo_ros" type="spawn_model" name="spawn_urdf" args="-urdf -model turtlebot3_$(arg model) -x $(arg x_pos) -y $(arg y_pos) -z $(arg z_pos) -param robot_description" />
+ <!--Use turtlebot's teleop key to move the bot in gazebo-->
   <node pkg="fetch_follow_target" type="turtlebot3_teleop_key" name="turtlebot3_teleop_keyboard"  output="screen">
   </node>
 </launch>
