@@ -5,7 +5,7 @@
   <arg name="x_pos" default="0.0"/>
   <arg name="y_pos" default="-2.0"/>
   <arg name="z_pos" default="0.0"/>
-  <arg name="yaw_pos" default ="1.53"/>
+  <arg name="yaw_pos" default ="-1.57"/>
 
   <param name="robot_description" command="$(find xacro)/xacro --inorder $(find turtlebot3_description)/urdf/turtlebot3_$(arg model).urdf.xacro" />
 
