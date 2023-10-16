@@ -139,6 +139,7 @@ install(
 
 catkin_install_python(PROGRAMS
   nodes/turtlebot3_teleop_key
+  nodes/teleop_twist_key.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
@@ -154,3 +155,7 @@ install(
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
+add_executable(joy_teleop src/joy_teleop.cpp)
+add_dependencies(joy_teleop ${catkin_EXPORTED_TARGETS})
+
+target_link_libraries(joy_teleop ${catkin_LIBRARIES})
