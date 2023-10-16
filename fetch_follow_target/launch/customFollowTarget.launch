@@ -36,8 +36,7 @@
 
   <!-- Spawn Turtlebot using namespace turtleBot-->
   <group ns="turtleBot">
-    <include file="$(find fetch_follow_target)/launch/customTurtleBotSpawn.launch">
-      <arg name="sdf_robot_file" value="$(find fetch_follow_target)/models/custom_turtle/model.sdf"/>
+    <include file="$(find fetch_follow_target)/launch/turtleBotSpawn.launch">
     </include>
   </group>
 
