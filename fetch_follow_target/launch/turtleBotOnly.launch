@@ -13,7 +13,7 @@
     <arg name="gui" value="true"/>
     <arg name="headless" value="false"/>
     <arg name="debug" value="false"/>
-    <arg name="world_name" value="$(find fetch_follow_target)/worlds/simWorld.world"/>
+    <arg name="world_name" value="$(find fetch_follow_target)/worlds/target_follow_maze.world"/>
   </include>
 
   <param name="robot_description" command="$(find xacro)/xacro --inorder $(find turtlebot3_description)/urdf/turtlebot3_$(arg model).urdf.xacro" />

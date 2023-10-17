@@ -55,7 +55,7 @@
           </noise>
         </ray>
         <plugin name='gazebo_ros_lds_lfcd_controller' filename='libgazebo_ros_laser.so'>
-          <topicName>robot1/scan</topicName>
+          <topicName>turtleBot/scan</topicName>
           <frameName>base_scan</frameName>
           <robotNamespace>/</robotNamespace>
         </plugin>
@@ -69,7 +69,7 @@
         <geometry>
           <mesh>
             <scale>0.001 0.001 0.001</scale>
-            <uri>model://turtlebot3_burger/meshes/burger_base.dae</uri>
+            <uri>model://turtleBot/meshes/burger_base.dae</uri>
           </mesh>
         </geometry>
         <material>
@@ -87,7 +87,7 @@
         <geometry>
           <mesh>
             <scale>0.001 0.001 0.001</scale>
-            <uri>model://turtlebot3_burger/meshes/lds.dae</uri>
+            <uri>model://turtleBot/meshes/lds.dae</uri>
           </mesh>
         </geometry>
         <material>
@@ -284,14 +284,14 @@
         <pose frame=''>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>model://custom_turtle/meshes/cubemesh.dae</uri>
+            <uri>model://turtleBot/meshes/cubemesh.dae</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
         <material>
           <script>
-            <uri>model://custom_turtle/materials/scripts</uri>
-            <uri>model://custom_turtle/materials/textures</uri>
+            <uri>model://turtleBot/materials/scripts</uri>
+            <uri>model://turtleBot/materials/textures</uri>
             <name>cube</name>
           </script>
         </material>
@@ -304,7 +304,7 @@
         <pose frame=''>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>model://custom_turtle/meshes/cubemesh.dae</uri>
+            <uri>model://turtleBot/meshes/cubemesh.dae</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -379,7 +379,7 @@
         <geometry>
           <mesh>
             <scale>0.001 0.001 0.001</scale>
-            <uri>model://turtlebot3_burger/meshes/left_tire.dae</uri>
+            <uri>model://turtleBot/meshes/tire.dae</uri>
           </mesh>
         </geometry>
         <material>
@@ -472,7 +472,7 @@
         <geometry>
           <mesh>
             <scale>0.001 0.001 0.001</scale>
-            <uri>model://turtlebot3_burger/meshes/right_tire.dae</uri>
+            <uri>model://turtleBot/meshes/tire.dae</uri>
           </mesh>
         </geometry>
         <material>
@@ -628,7 +628,7 @@
     <allow_auto_disable>1</allow_auto_disable>
     <plugin name='imu_plugin' filename='libgazebo_ros_imu.so'>
       <alwaysOn>1</alwaysOn>
-      <topicName>robot1/imu</topicName>
+      <topicName>turtleBot/imu</topicName>
       <serviceName>imu_service</serviceName>
       <gaussianNoise>0.0</gaussianNoise>
       <updateRate>200</updateRate>
@@ -656,9 +656,9 @@
       <rpyOffset>0 -0 0</rpyOffset>
     </plugin>
     <plugin name='turtlebot3_burger_controller' filename='libgazebo_ros_diff_drive.so'>
-      <commandTopic>robot1/cmd_vel</commandTopic>
-      <odometryTopic>robot1/odom</odometryTopic>
-      <odometryFrame>robot1/odom</odometryFrame>
+      <commandTopic>turtleBot/cmd_vel</commandTopic>
+      <odometryTopic>turtleBot/odom</odometryTopic>
+      <odometryFrame>turtleBot/odom</odometryFrame>
       <odometrySource>world</odometrySource>
       <publishOdomTF>1</publishOdomTF>
       <robotBaseFrame>base_footprint</robotBaseFrame>
