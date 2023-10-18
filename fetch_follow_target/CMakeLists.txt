@@ -110,9 +110,9 @@ include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
   ${GAZEBO_INCLUDE_DIRS}
-  # ${Boost_INCLUDE_DIRS}
-  # ${OpenCV_INCLUDE_DIRS}
-  # ${EIGEN3_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIRS}
 )
 
 ################################################################################
@@ -157,5 +157,4 @@ install(
 
 add_executable(joy_teleop src/joy_teleop.cpp)
 add_dependencies(joy_teleop ${catkin_EXPORTED_TARGETS})
-
 target_link_libraries(joy_teleop ${catkin_LIBRARIES})
