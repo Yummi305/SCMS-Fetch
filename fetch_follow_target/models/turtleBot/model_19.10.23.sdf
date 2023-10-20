@@ -1,8 +1,7 @@
 <?xml version='1.0'?>
 <sdf version='1.7'>
   <model name='turtleBot_Dennis_coloured'>
-
-    <link name='base'>
+    <link name='base_footprint'>
       <pose frame=''>0 0 0 0 -0 0</pose>
       <inertial>
         <pose frame=''>-0.00429 0 0.030734 0 -0 0</pose>
@@ -83,7 +82,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='base_fixed_joint_lump__base_scan_visual_1'>
+      <visual name='base_footprint_fixed_joint_lump__base_scan_visual_1'>
         <pose frame=''>-0.032 0 0.182 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -101,7 +100,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <collision name='base_collision'>
+      <collision name='base_footprint_fixed_joint_lump__base_link_collision'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose frame=''>-0.032 0 0.08 0 -0 0</pose>
@@ -156,7 +155,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='caster_collision'>
+      <collision name='base_footprint_fixed_joint_lump__caster_back_link_collision_1'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose frame=''>-0.081 1e-06 0.005 -1.57 0 0</pose>
@@ -168,8 +167,8 @@
         <surface>
           <friction>
             <ode>
-              <mu>0.9</mu>
-              <mu2>0.9</mu2>
+              <mu>0.1</mu>
+              <mu2>0.1</mu2>
               <fdir1>0 0 0</fdir1>
               <slip1>0</slip1>
               <slip2>0</slip2>
@@ -211,7 +210,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='lidar_sensor_collision'>
+      <collision name='base_footprint_fixed_joint_lump__base_scan_collision_2'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose frame=''>-0.017 0 0.1755 0 -0 0</pose>
@@ -268,8 +267,6 @@
         </surface>
       </collision>
     </link>
-
-
     <link name='link_0'>
       <inertial>
         <mass>0.01</mass>
@@ -358,9 +355,7 @@
         </surface>
       </collision>
     </link>
-
-
-    <link name='left_wheel_link'>
+    <link name='wheel_left_link'>
       <pose frame=''>-0 0.08 0.033 -1.57 0 0</pose>
       <inertial>
         <pose frame=''>0 0 0 0 -0 0</pose>
@@ -379,7 +374,7 @@
       <self_collide>0</self_collide>
       <enable_wind>0</enable_wind>
       <kinematic>0</kinematic>
-      <visual name='left_wheel_link_visual'>
+      <visual name='wheel_left_link_visual'>
         <pose frame=''>0 0 0 1.57 -0 0</pose>
         <geometry>
           <mesh>
@@ -396,7 +391,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <collision name='left_wheel_link_collision'>
+      <collision name='wheel_left_link_collision'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose frame=''>0 0 0 0 -0 0</pose>
@@ -409,8 +404,8 @@
         <surface>
           <friction>
             <ode>
-              <mu>0.9</mu>
-              <mu2>0.9</mu2>
+              <mu>0.1</mu>
+              <mu2>0.1</mu2>
               <fdir1>1 0 0</fdir1>
               <slip1>0</slip1>
               <slip2>0</slip2>
@@ -436,8 +431,8 @@
             <ode>
               <soft_cfm>0</soft_cfm>
               <soft_erp>0.2</soft_erp>
-              <kp>100000000</kp>
-              <kd>1</kd>
+              <kp>500000</kp>
+              <kd>10</kd>
               <max_vel>0.1</max_vel>
               <min_depth>0.001</min_depth>
             </ode>
@@ -446,16 +441,15 @@
               <split_impulse_penetration_threshold>-0.01</split_impulse_penetration_threshold>
               <soft_cfm>0</soft_cfm>
               <soft_erp>0.2</soft_erp>
-              <kp>100000000</kp>
-              <kd>1</kd>
+              <kp>500000</kp>
+              <kd>10</kd>
             </bullet>
           </contact>
         </surface>
       </collision>
     </link>
 
-
-    <link name='right_wheel_link'>
+    <link name='wheel_right_link'>
       <pose frame=''>0 -0.08 0.033 -1.57 0 0</pose>
       <inertial>
         <pose frame=''>0 0 0 0 -0 0</pose>
@@ -474,7 +468,7 @@
       <self_collide>0</self_collide>
       <enable_wind>0</enable_wind>
       <kinematic>0</kinematic>
-      <visual name='right_wheel_link_visual'>
+      <visual name='wheel_right_link_visual'>
         <pose frame=''>0 0 0 1.57 -0 0</pose>
         <geometry>
           <mesh>
@@ -491,7 +485,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <collision name='right_wheel_link_collision'>
+      <collision name='wheel_right_link_collision'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose frame=''>0 0 0 0 -0 0</pose>
@@ -504,8 +498,8 @@
         <surface>
           <friction>
             <ode>
-              <mu>0.9</mu>
-              <mu2>0.9</mu2>
+              <mu>0.1</mu>
+              <mu2>0.1</mu2>
               <fdir1>1 0 0</fdir1>
               <slip1>0</slip1>
               <slip2>0</slip2>
@@ -531,8 +525,8 @@
             <ode>
               <soft_cfm>0</soft_cfm>
               <soft_erp>0.2</soft_erp>
-              <kp>100000000</kp>
-              <kd>1</kd>
+              <kp>500000</kp>
+              <kd>10</kd>
               <max_vel>0.1</max_vel>
               <min_depth>0.001</min_depth>
             </ode>
@@ -541,17 +535,16 @@
               <split_impulse_penetration_threshold>-0.01</split_impulse_penetration_threshold>
               <soft_cfm>0</soft_cfm>
               <soft_erp>0.2</soft_erp>
-              <kp>100000000</kp>
-              <kd>1</kd>
+              <kp>500000</kp>
+              <kd>10</kd>
             </bullet>
           </contact>
         </surface>
       </collision>
     </link>
 
-
-    <joint name='base_JOINT_0' type='fixed'>
-      <parent>base</parent>
+    <joint name='base_footprint_JOINT_0' type='fixed'>
+      <parent>base_footprint</parent>
       <child>link_0</child>
       <pose frame=''>0 0 0 0 -0 0</pose>
       <physics>
@@ -567,11 +560,9 @@
         </ode>
       </physics>
     </joint>
-
-
-    <joint name='left_wheel_joint' type='revolute'>
-      <parent>base</parent>
-      <child>left_wheel_link</child>
+    <joint name='wheel_left_joint' type='revolute'>
+      <parent>base_footprint</parent>
+      <child>wheel_left_link</child>
       <pose frame=''>0 0 0 0 -0 0</pose>
       <axis>
         <xyz>0 0 1</xyz>
@@ -586,7 +577,6 @@
           <spring_reference>0</spring_reference>
           <spring_stiffness>0</spring_stiffness>
           <damping>0</damping>
-          <implicitSpringDamper>true</implicitSpringDamper>
           <friction>0</friction>
         </dynamics>
       </axis>
@@ -604,10 +594,9 @@
       </physics>
     </joint>
 
-
-    <joint name='right_wheel_joint' type='revolute'>
-      <parent>base</parent>
-      <child>right_wheel_link</child>
+    <joint name='wheel_right_joint' type='revolute'>
+      <parent>base_footprint</parent>
+      <child>wheel_right_link</child>
       <pose frame=''>0 0 0 0 -0 0</pose>
       <axis>
         <xyz>0 0 0.1</xyz>
@@ -622,7 +611,6 @@
           <spring_reference>0</spring_reference>
           <spring_stiffness>0</spring_stiffness>
           <damping>0</damping>
-          <implicitSpringDamper>true</implicitSpringDamper>
           <friction>0</friction>
         </dynamics>
       </axis>
@@ -640,11 +628,8 @@
       </physics>
     </joint>
 
-
     <static>0</static>
     <allow_auto_disable>1</allow_auto_disable>
-
-    
     <plugin name='imu_plugin' filename='libgazebo_ros_imu.so'>
       <alwaysOn>1</alwaysOn>
       <topicName>robot1/imu</topicName>
@@ -669,8 +654,8 @@
         </noise>
       </imu>
       <robotNamespace>/</robotNamespace>
-      <bodyName>base</bodyName>
-      <frameName>base</frameName>
+      <bodyName>base_footprint</bodyName>
+      <frameName>base_footprint</frameName>
       <xyzOffset>0.064 0 -0.156</xyzOffset>
       <rpyOffset>0 -0 0</rpyOffset>
     </plugin>
@@ -680,14 +665,14 @@
       <odometryFrame>turtleBot/odom</odometryFrame>
       <odometrySource>world</odometrySource>
       <publishOdomTF>1</publishOdomTF>
-      <robotBaseFrame>base</robotBaseFrame>
+      <robotBaseFrame>base_footprint</robotBaseFrame>
       <publishWheelTF>0</publishWheelTF>
       <publishTf>1</publishTf>
       <publishWheelJointState>1</publishWheelJointState>
       <legacyMode>0</legacyMode>
       <updateRate>30</updateRate>
-      <leftJoint>left_wheel_joint</leftJoint>
-      <rightJoint>right_wheel_joint</rightJoint>
+      <leftJoint>wheel_left_joint</leftJoint>
+      <rightJoint>wheel_right_joint</rightJoint>
       <wheelSeparation>0.160</wheelSeparation>
       <wheelDiameter>0.066</wheelDiameter>
       <wheelAcceleration>1</wheelAcceleration>
