@@ -1,4 +1,4 @@
-#include "laserprocessing.h"
+#include "../include/laserprocessing.h"
 #include <algorithm>
 #include <numeric>
 
@@ -101,70 +101,6 @@ void LaserProcessing::getConeLocations()
 }
 
 
-std::vector<geometry_msgs::Point> LaserProcessing::detectConePair()
-{
-    // Initialise values.
-    std::vector<geometry_msgs::Point> cone_points;
-    geometry_msgs::Point point1;
-    geometry_msgs::Point point2;
-    double closest_range = laserScan_.range_max;
-    unsigned int idx = 0, jdx = 0;
-
-    // Get cone locations.
-    getConeLocations();
-
-    // Extract points.
-    for (size_t i = 0; i < cones_.size(); ++i)
-    {
-        for (size_t j = 0; j < cones_.size(); ++j)
-        {
-            if (i == j)
-            {
-                continue;
-            }
-            double d = std::sqrt(std::pow(cones_.at(i).first - cones_.at(j).first, 2) + std::pow(cones_.at(i).second - cones_.at(j).second, 2));
-            if (d < closest_range)
-            {
-                idx = i;
-                jdx = j;
-                closest_range = d;
-            }
-        }
-    }
-
-    // Save cone as point 1.
-    point1.x = cones_.at(idx).first;
-    point1.y = cones_.at(idx).second;
-    point1.z = 0;
-
-    // Save cone as point 2.
-    point2.x = cones_.at(jdx).first;
-    point2.y = cones_.at(jdx).second;
-    point2.z = 0;
-
-    // Push cones 1 and 2 into container.
-    cone_points.push_back(point1);
-    cone_points.push_back(point2);
-
-    // Calculate road centre (midpoint of cones 1 and 2).
-    roadCentre_.x = (cones_.at(idx).first + cones_.at(jdx).first) / 2;
-    roadCentre_.y = (cones_.at(idx).second + cones_.at(jdx).second) / 2;
-    roadCentre_.z = 0;
-
-    // ROS_INFO_STREAM("CONES DETECTED!!");
-    // for (int i = 0; i < cone_points.size(); ++i)
-    // {
-    // ROS_INFO_STREAM("cone " << i << " x,y " << cone_points.at(i).x << "," << cone_points.at(i).y);
-    // }
-    return cone_points;
-}
-
-
-geometry_msgs::Point LaserProcessing::getRoadCentre()
-{
-    // Updated in detectConePair().
-    return roadCentre_;
-}
 
 
 geometry_msgs::Point LaserProcessing::polarToCart(unsigned int index)

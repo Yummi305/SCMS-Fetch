@@ -15,20 +15,22 @@
 /*Class declerations here for followTarget.cpp*/
 class FollowTarget{
     public:
-        FollowTarget(ros::NodeHandle n);
+        FollowTarget(ros::NodeHandle n_);
 
         void tagCallback(const geometry_msgs::Vector3StampedPtr &msg); //reference point to input variable
-        void laserCallback(const sensor_msgs::LaserScanPtr &smsg);
+        void laserCallback(const sensor_msgs::LaserScanConstPtr &msg);
         void stop();
 
     private:
         ros::NodeHandle n_;
-        ros::Subscriber laser;
+        ros::Subscriber laser_subscribe_;
         ros::Subscriber marker;
         ros::Subscriber posTracker;
         ros::Publisher vel;
         geometry_msgs::Twist teleop;
 
+    protected:
+        bool fetchDrive;
 };
 
 #endif

@@ -27,12 +27,6 @@ public:
    */
   void getConeLocations();
 
-  /*!
-   * @brief getRoadCentre
-   * Return the location of the road centre
-   * @return point - the location of the centre of the road
-   */
-  geometry_msgs::Point getRoadCentre();
 
   /*! @brief getGlobalPoints
    *  Convert points from local plane to global plane.
@@ -55,14 +49,6 @@ public:
    *  @param theta - angle
    */
   double normaliseAngle(double theta);
-
-  /*!
-   * @brief detectConePair
-   * Return the location of two closest cones.
-   * Detect two cones, that are closest together, and on either side of the road
-   * @return point - the location of the two cones.
-   */
-  std::vector<geometry_msgs::Point> detectConePair();
 
   /*! @brief Returns the cartesian position of laser reading at specific index
    * converted from polar coordinats stored in the #laserScan_
