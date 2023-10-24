@@ -1,26 +1,25 @@
-#include "../include/FetchRobotPathFollow/laserScan.h"
+#include "../include/laserScan.h"
 
-static const int LASER_FIELD_OF_VIEW = 140;
-static const double LASER_LIMIT = 0.35;
-static const double RAD_ROBOT = 0.257;
+static const int laserFOV = 140;
+static const double laserLimit = 0.35;
+static const double radFetch = 0.257;
 
-LaserDetection::LaserDetection()
-{
-}
+LaserDetect::LaserDectect(){}
 
-bool LaserDetection::detectObtacle(sensor_msgs::LaserScan::ConstPtr laserScan)
-{
-    double laser_reading = laserScan->range_max;                                  // get max reading
-    int range_start = (laserScan->ranges.size() / 2) - (LASER_FIELD_OF_VIEW / 2); // consider star of FOV
-    int range_end = (laserScan->ranges.size() / 2) + (LASER_FIELD_OF_VIEW / 2);   //consider end of FOV
-    for (unsigned int i = range_start; i <= range_end; i++)
+bool LaserDetect::ObjectDetect(sensor_msgs::LaserScan::ConstPtr laserScan){
+
+    double laserReading = laserScan->range_max;                           // get max reading
+    int rangeStart = (laserScan->ranges.size() / 2) - (laserFOV / 2);     // consider star of FOV
+    int rangeEnd = (laserScan->ranges.size() / 2) + (laserFOV / 2);       //consider end of FOV
+    for (unsigned int i = rangeStart; i <= rangeEnd; i++)
     {
-        if (laserScan->ranges.at(i) < laser_reading)
+        if (laserScan->ranges.at(i) < laserReading)
         {
-            laser_reading = laserScan->ranges.at(i); // Store laser reading
+            laserReading = laserScan->ranges.at(i); // Store laser reading
         }
     }
-    if (laser_reading <= LASER_LIMIT + RAD_ROBOT) // check if condition is valid
+
+    if (laserReading <= laserLimit + radFetch) // check if condition is valid
     {
         return true;
     }
@@ -28,18 +27,21 @@ bool LaserDetection::detectObtacle(sensor_msgs::LaserScan::ConstPtr laserScan)
     {
         return false;
     }
+
 }
 
-double LaserDetection::getLaserReading(sensor_msgs::LaserScan::ConstPtr laserScan)
-{
-    int range_start = (laserScan->ranges.size() / 2) - (LASER_FIELD_OF_VIEW / 2);
-    int range_end = (laserScan->ranges.size() / 2) + (LASER_FIELD_OF_VIEW / 2);
-    for (unsigned int i = range_start; i <= range_end; i++)
+double LaserDetect::LaserReading(sensor_msgs::LaserScan::ConstPtr laserScan){
+
+    int rangeStart = (laserScan->ranges.size() / 2) - (laserFOV / 2);
+    int rangeEnd = (laserScan->ranges.size() / 2) + (laserFOV / 2);
+    for (unsigned int i = rangeStart; i <= rangeEnd; i++)
     {
-        if (laserScan->ranges.at(i) < laser_reading_)
+        if (laserScan->ranges.at(i) < laserReading_)
         {
-            laser_reading_ = laserScan->ranges.at(i);
+            laserReading_ = laserScan->ranges.at(i);
         }
     }
-    return laser_reading_;
+    return laserReading_;
+
 }
+
