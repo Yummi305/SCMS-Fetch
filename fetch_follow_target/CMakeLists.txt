@@ -12,11 +12,20 @@ find_package(catkin
     robot_controllers
     robot_controllers_interface
     roscpp
+    rospy	
     std_msgs
     sensor_msgs
+    roslib
+    control_msgs
     geometry_msgs
-    nav_msgs
-    tf
+    cv_bridge
+    image_transport
+    message_generation
+    visp_auto_tracker
+    visp_bridge
+    visp_camera_calibration
+    visp_hand2eye_calibration
+    visp_tracker
 )
 
 include_directories(
@@ -48,6 +57,19 @@ catkin_package(
   INCLUDE_DIRS
     include
 )
+
+
+# Check for c++11 / c++0x support
+include(CheckCXXCompilerFlag)
+CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
+if(COMPILER_SUPPORTS_CXX11)
+    set(CMAKE_CXX_FLAGS "-std=c++11")
+elseif(COMPILER_SUPPORTS_CXX0X)
+    set(CMAKE_CXX_FLAGS "-std=c++0x")
+else()
+    message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
+endif()
 
 ################################################
 ## Declare ROS messages, services and actions ##
@@ -155,7 +177,9 @@ install(
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
-add_executable(followTarget src/followTarget.cpp)
+add_library(${PROJECT_NAME}_laserprocessing src/laserprocessing.cpp)
+
+add_executable(followTarget src/main.cpp src/followTarget.cpp)
 add_dependencies(followTarget ${catkin_EXPORTED_TARGETS})
 target_link_libraries(followTarget ${catkin_LIBRARIES})
 

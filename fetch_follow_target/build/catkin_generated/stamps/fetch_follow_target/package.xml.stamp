@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>fetch_follow_target</name>
+  <version>1.0.0</version>
+  <description>The Fetch Follow Target package</description>
+
+  <!-- One maintainer tag required, multiple allowed, one person per tag -->
+  <maintainer email="daniel.mcmahon3434@gmail.com">Dan McMahon</maintainer>
+  <maintainer email="TODO@DENNIS.com">Dennis</maintainer>
+  <maintainer email="TODO@JEN.com">Jen</maintainer>
+
+  <license>BSD, MIT, Boost Software License, GPLv2, GPLv3, LPGv2.1, LPGv3</license>
+
+
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>angles</build_depend>
+  <build_depend>gazebo_dev</build_depend>
+
+  <depend>control_toolbox</depend>
+  <depend>boost</depend>
+  <depend>gazebo_plugins</depend>
+  <depend>gazebo_ros</depend>
+  <depend>robot_controllers</depend>
+  <depend>robot_controllers_interface</depend>
+
+  <depend>roscpp</depend>
+  <depend>std_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>tf</depend>
+  <exec_depend>turtlebot3_description</exec_depend>
+
+  <exec_depend>actionlib</exec_depend>
+  <exec_depend>control_msgs</exec_depend>
+  <exec_depend>depth_image_proc</exec_depend>
+  <exec_depend>fetch_description</exec_depend>
+  <exec_depend>gazebo</exec_depend>
+  <exec_depend>image_proc</exec_depend>
+  <exec_depend>nodelet</exec_depend>
+  <exec_depend>rgbd_launch</exec_depend>
+  <exec_depend>trajectory_msgs</exec_depend>
+  <exec_depend>xacro</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>topic_tools</exec_depend>
+
+  <export>
+    <gazebo_ros gazebo_model_path="${prefix}/models"/>
+    <gazebo_ros plugin_path="${prefix}/lib" gazebo_media_path="${prefix}" />
+  </export>
+</package>

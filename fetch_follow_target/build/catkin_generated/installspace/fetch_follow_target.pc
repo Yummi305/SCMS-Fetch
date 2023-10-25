@@ -1,0 +1,8 @@
+prefix=/usr/local
+
+Name: fetch_follow_target
+Description: Description of fetch_follow_target
+Version: 1.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 
