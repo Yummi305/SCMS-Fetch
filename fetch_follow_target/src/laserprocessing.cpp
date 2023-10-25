@@ -1,4 +1,4 @@
-#include "../include/laserprocessing.h"
+#include "laserprocessing.h"
 #include <algorithm>
 #include <numeric>
 

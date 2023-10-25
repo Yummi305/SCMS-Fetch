@@ -21,11 +21,6 @@ find_package(catkin
     cv_bridge
     image_transport
     message_generation
-    visp_auto_tracker
-    visp_bridge
-    visp_camera_calibration
-    visp_hand2eye_calibration
-    visp_tracker
 )
 
 include_directories(

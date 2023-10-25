@@ -1,7 +1,7 @@
 
 #include "ros/ros.h"
 #include <thread>
-#include "../include/followTarget.h"
+#include "followTarget.h"
 
 int main(int argc, char** argv)
 {
@@ -28,7 +28,7 @@ int main(int argc, char** argv)
      * and thereafter start the thread on the function desired
      */
     std::shared_ptr<FollowTarget> FollowTargetPtr(new followTarget(nh));
-        
+
     /**
    * ros::spin() will enter a loop, pumping callbacks.  With this version, all
    * callbacks will be called from within this thread (the main one).  ros::spin()

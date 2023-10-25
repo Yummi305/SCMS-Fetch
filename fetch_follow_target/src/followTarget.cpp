@@ -1,4 +1,4 @@
-#include "../include/followTarget.h"
+#include "followTarget.h"
 
 // FollowTarget Constructor
 FollowTarget::FollowTarget(ros::NodeHandle nh) : nh_(nh)
@@ -13,7 +13,6 @@ FollowTarget::FollowTarget(ros::NodeHandle nh) : nh_(nh)
 
     // Initialise thread.
     std::thread(&FollowTarget::run, this);
-
     sweepComplete = false;
     objectDetected = false;
     fetchMission = true;
