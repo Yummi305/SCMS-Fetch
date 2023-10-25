@@ -1,9 +1,9 @@
-#ifndef FOLLOWTARGET.H
-#define FOLLOWTARGET.H
+#ifndef FOLLOWTARGET_H
+#define FOLLOWTARGET_H
 
 #include "ros/ros.h"
 #include "geometry_msgs/Twist.h"
-#include "geometry_msgs/Vector3_vector.h"
+// #include "geometry_msgs/Vector3_vector.h"
 #include "sensor_msgs/LaserScan.h"
 #include <tf/transform_listener.h>
 #include "../include/laserprocessing.h"
