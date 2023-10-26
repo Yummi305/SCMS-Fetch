@@ -1,94 +1,84 @@
-/*
-Goals:
-- Setup up class which will house components for tracking the April Tag
-- Class will interperate position of marker relative to fetch camera position
-- Publish velocity commands to cmd_vel. 
-- Setup object detection via laser scanning class
-
-*/
-
-#include "ros/ros.h"
-#include "geometry_msgs/Twist.h"
-#include "geometry_msgs/Vector3Stamped.h"
-#include "tf_msgs/tfMessage.h"
-#include "sensor_msgs/LaserScan.h"
-#include "../include/laserprocessing.h"
-#include <istream>
-#include <chrono>
-#include <vector>
+#include <ros/ros.h>
+#include <geometry_msgs/Vector3Stamped.h>
+#include <geometry_msgs/Twist.h>
+#include <tf/transform_listener.h>
 #include <cmath>
+#include <iostream>
 
+class FollowTarget {
 
+    ros::NodeHandle nh;
+    ros::Subscriber marker_sub;
+    ros::Publisher cmd_vel_pub;
+    geometry_msgs::Twist cmd_vel;
+    geometry_msgs::Vector3Stamped pose;
 
-#define LASER_LIMIT 0.35 //in meters
+    double target_distance_threshold;
+    double thresholdErr;
+    double shortDist;
+    bool sweepComplete;
+    bool objectDetected;
+    bool markerDetected;
 
-class FollowTarget{
     public:
-        FollowTarget();
-        void stop();
-        void markerClbk(const geometry_msgs::Vector3Stamped::ConstPtr& msg);
-    
-    private:
-        LaserScanning laserScan;
-        ros::NodeHandler n;
-        ros::Publisher pub_vel = n.advertise<geometry_msgs::Twist>("/cmd_vel", 1)
+    FollowTarget(ros::NodeHandle nh) {
+        marker_sub = nh.subscribe("/aruco_single/position", 1000, &FollowTarget::markerCallback, this);
+        cmd_vel_pub = nh.advertise<geometry_msgs::Twist>("cmd_vel",1);
+        
+        target_distance_threshold = 1.0;
+        ROS_INFO_STREAM("init");
+
+        sweepComplete = false;
+        objectDetected = false;
+    }
+
+    void markerCallback(const geometry_msgs::Vector3StampedPtr& msg){
+        if(!markerDetected){
+            markerDetected = true;
+            ROS_INFO_STREAM("Guider has been detected");
+            sweepComplete = true;
+        }
+        
+        pose.vector.x = msg->vector.z;
+        pose.vector.y = msg->vector.x;
+        pose.vector.z = msg->vector.y;
+
+        shortDist = roundf64(sqrt(pow(pose.vector.x,2) +pow(pose.vector.y,2))*10)/ 10;
+        thresholdErr = 0.01;
+
+        if (shortDist <= (target_distance_threshold + thresholdErr) && shortDist >= (target_distance_threshold - thresholdErr)){
+
+            cmd_vel.linear.x = 0.0;
+            cmd_vel.angular.z = 0.0;
+
+        }
+
+        else {
+            if(!objectDetected){
+                double error = shortDist - target_distance_threshold;
+                if (shortDist > target_distance_threshold *1.5){
+                    cmd_vel.linear.x = error;
+                }
+                else if (shortDist < target_distance_threshold *0.95){
+                    cmd_vel.linear.x = -0.3;
+                }
+                else cmd_vel.linear.x = error/2;
+
+                if (pose.vector.y ==0){
+                    cmd_vel.angular.z =0;
+                }
+                else cmd_vel.angular.z =- pose.vector.y;
+            }
+        }
+
+        cmd_vel_pub.publish(cmd_vel);
+    }
 
 };
 
-FollowTarget::FollowTarget(ros::NodeHandle n_){
-
-    laser_subscribe_ = n_.subscribe("orange/laser/scan", 100, &FollowTarget::laserCallback, this);
-
-    // While loop so that robot is always looking for target.
-    while (ros::ok())
-    {
-
-        if (!fetchDrive)
-        {
-        ROS_INFO_STREAM("Fetch not moving forward due to obstacle.");
-        // Stop Fetch from driving forward and colliding with obstacle
-        stop();
-        continue;
-        } else {
-            // Fetch may continue driving
-
-        }
-
-        // New Laser scan.
-        LaserProcessing laser;
-
-        // Process laser reading.
-        laser.newScan(laser_scan_);
-
-        // Check if obstacle is blocking robot.
-        if (laser.checkObstacle())
-        {
-            ROS_INFO_STREAM("Obstacle detected in path.");
-            fetchDrive = false;
-        }
-
-    }
+int main(int argc, char** argv){
+    ros::init(argc,argv,"followTarget");
+    FollowTarget followTarget;
+    ros::spin();
+    return 0;
 }
-
-FollowTarget::stop(){
-
-}
-
-FollowTarget::markerClbk(const geometry_msgs::Vector3Stamped::ConstPtr& msg){
-
-}
-
-int main(int argc, char** argv)
-{
-  ros::init(argc, argv, "followTarget");
-  FollowTarget followTarget;
-  ros::spin();
-}
-
-
-
-void FollowTarget::laserCallback(const sensor_msgs::LaserScanConstPtr &msg)
-{
-  laser_scan_ = *msg;
-}
-

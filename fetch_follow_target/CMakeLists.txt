@@ -155,6 +155,10 @@ install(
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
+add_executable(followTarget src/followTarget.cpp)
+add_dependencies(followTarget ${catkin_EXPORTED_TARGETS})
+target_link_libraries(followTarget ${catkin_LIBRARIES})
+
 add_executable(joy_teleop src/joy_teleop.cpp)
 add_dependencies(joy_teleop ${catkin_EXPORTED_TARGETS})
 target_link_libraries(joy_teleop ${catkin_LIBRARIES})

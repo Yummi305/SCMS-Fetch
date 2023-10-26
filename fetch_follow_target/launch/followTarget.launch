@@ -33,6 +33,6 @@
     </node>
 
     <!-- Launch follower node -->
-    <!-- <node respawn="true" pkg="fetch_robot_path_follow" type="fetch_robot_path_follow-guider_follow" name="follow_guider" output="screen"/> -->
+    <node name="followTarget" pkg="fetch_follow_target" type="followTarget" args="-d $(find fetch_follow_target)" output="screen" respawn="true"/>
     
 </launch>
