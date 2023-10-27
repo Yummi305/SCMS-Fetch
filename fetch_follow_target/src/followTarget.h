@@ -1,21 +1,18 @@
 #ifndef FOLLOWTARGET_H
 #define FOLLOWTARGET_H
 
-#include "ros/ros.h"
-#include "geometry_msgs/Twist.h"
-// #include "geometry_msgs/Vector3_vector.h"
-#include "sensor_msgs/LaserScan.h"
+#include <ros/ros.h>
+#include <geometry_msgs/Twist.h>
+#include <geometry_msgs/Vector3Stamped.h>
+#include <sensor_msgs/LaserScan.h>
 #include <tf/transform_listener.h>
-#include "../include/laserprocessing.h"
-#include "geometry_msgs/PoseArray.h"
-#include "std_msgs/Float64.h"
-#include "tf/transform_datatypes.h"
-#include "std_srvs/SetBool.h"
-#include "visualization_msgs/MarkerArray.h"
+#include "laserprocessing.h"
+#include <geometry_msgs/PoseArray.h>
 #include <iostream>
 #include <cmath>
 #include <chrono>
 #include <vector>
+#include <thread>
 
 
 /*Class declerations here for followTarget.cpp*/
@@ -25,8 +22,8 @@ class FollowTarget{
         ~FollowTarget();
         void run();
         void stop();
-        void laserCallback(const sensor_msgs::LaserScanPtr &msg);
-        void markerCallback(const geometry_msgs::Vector3StampedPtr &msg)
+        void laserCallback(const sensor_msgs::LaserScan::ConstPtr &msg);
+        void markerCallback(const geometry_msgs::Vector3Stamped::ConstPtr &msg);
         // void tagCallback(const geometry_msgs::Vector3StampedPtr &msg); //reference point to input variable
         
     protected:
@@ -51,7 +48,7 @@ class FollowTarget{
         double shortDist;
         bool sweepComplete;
         bool objectDetected;
-        bool markerDetected
+        bool markerDetected;
 };
 
 #endif

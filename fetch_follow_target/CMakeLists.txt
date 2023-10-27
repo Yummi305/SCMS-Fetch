@@ -34,24 +34,6 @@ link_directories(
   ${GAZEBO_LIBRARY_DIRS}
 )
 
-catkin_package(
-  CATKIN_DEPENDS
-    control_toolbox
-    gazebo_plugins
-    gazebo_ros
-    robot_controllers
-    robot_controllers_interface
-    roscpp 
-    std_msgs 
-    sensor_msgs 
-    geometry_msgs 
-    nav_msgs 
-    tf
-  LIBRARIES
-    fetch_gazebo_plugin
-  INCLUDE_DIRS
-    include
-)
 
 
 # Check for c++11 / c++0x support

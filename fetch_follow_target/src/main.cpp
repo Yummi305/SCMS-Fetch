@@ -1,6 +1,5 @@
 
 #include "ros/ros.h"
-#include <thread>
 #include "followTarget.h"
 
 int main(int argc, char** argv)
@@ -16,8 +15,6 @@ int main(int argc, char** argv)
     * part of the ROS system.
     */
     ros::init(argc, argv, "followTarget");
-
-
     ros::NodeHandle nh;
 
 
@@ -27,7 +24,7 @@ int main(int argc, char** argv)
      * Let's start seperate thread first, to do that we need to create object
      * and thereafter start the thread on the function desired
      */
-    std::shared_ptr<FollowTarget> FollowTargetPtr(new followTarget(nh));
+    std::shared_ptr<FollowTarget> FollowTargetPtr(new FollowTarget(nh));
 
     /**
    * ros::spin() will enter a loop, pumping callbacks.  With this version, all

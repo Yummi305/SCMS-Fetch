@@ -1,13 +1,12 @@
 #include "followTarget.h"
 
 // FollowTarget Constructor
-FollowTarget::FollowTarget(ros::NodeHandle nh) : nh_(nh)
+FollowTarget::FollowTarget(ros::NodeHandle nh) : nh(nh)
 {
     // ROS Subscriber
-    laser_subscribe_ = n_.subscribe("orange/laser/scan", 100, &FollowTarget::laserCallback, this);
+    laser_subscribe_ = nh.subscribe("orange/laser/scan", 100, &FollowTarget::laserCallback, this);
 
     // ROS Service
-    request_service_ = n_.advertiseService("/orange/mission", &FollowTarget::request, this);
     marker_sub = nh.subscribe("/aruco_single/position", 1000, &FollowTarget::markerCallback, this);
     cmd_vel_pub = nh.advertise<geometry_msgs::Twist>("cmd_vel", 1);
 
@@ -28,7 +27,7 @@ FollowTarget::~FollowTarget()
     }
 }
 
-FollowTarget::run(void)
+void FollowTarget::run()
 {
     // While loop so that robot is always looking for target.
     while (ros::ok())
@@ -62,16 +61,16 @@ FollowTarget::run(void)
     }
 }
 
-FollowTarget::stop()
+void FollowTarget::stop()
 {
 }
 
-FollowTarget::laserCallback(const sensor_msgs::LaserScanConstPtr &msg)
+void FollowTarget::laserCallback(const sensor_msgs::LaserScan::ConstPtr &msg)
 {
     laser_scan_ = *msg;
 }
 
-FollowTarget::markerCallback(const geometry_msgs::Vector3StampedPtr &msg)
+void FollowTarget::markerCallback(const geometry_msgs::Vector3Stamped::ConstPtr &msg)
 {
     if (!markerDetected)
     {
