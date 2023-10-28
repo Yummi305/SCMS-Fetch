@@ -11,7 +11,7 @@ FollowTarget::FollowTarget(ros::NodeHandle nh) : nh(nh)
     cmd_vel_pub = nh.advertise<geometry_msgs::Twist>("cmd_vel", 1);
 
     // Initialise thread.
-    std::thread(&FollowTarget::run, this);
+    // std::thread(&FollowTarget::run, this);
     sweepComplete = false;
     objectDetected = false;
     fetchMission = true;

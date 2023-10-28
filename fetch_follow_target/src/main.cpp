@@ -25,6 +25,7 @@ int main(int argc, char** argv)
      * and thereafter start the thread on the function desired
      */
     std::shared_ptr<FollowTarget> FollowTargetPtr(new FollowTarget(nh));
+    std::thread t(&FollowTarget::run, FollowTargetPtr);
 
     /**
    * ros::spin() will enter a loop, pumping callbacks.  With this version, all
@@ -37,6 +38,8 @@ int main(int argc, char** argv)
      * Let's cleanup everything, shutdown ros and join the thread
      */
     ros::shutdown();
+
+    t.join();
 
     return 0;
 }
