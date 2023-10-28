@@ -156,7 +156,7 @@ install(
 
 add_library(${PROJECT_NAME}_laserprocessing src/laserprocessing.cpp)
 
-add_executable(followTarget src/main.cpp src/followTarget.cpp)
+add_executable(followTarget src/main.cpp src/followTarget.cpp src/laserprocessing.cpp)
 add_dependencies(followTarget ${catkin_EXPORTED_TARGETS})
 target_link_libraries(followTarget ${catkin_LIBRARIES})
 

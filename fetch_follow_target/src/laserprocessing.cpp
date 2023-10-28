@@ -6,11 +6,13 @@ using namespace std;
 
 LaserProcessing::LaserProcessing() : cone_distance_(0.3f)
 {
+    ROS_INFO_STREAM("LASER CREATED.");
 }
 
 void LaserProcessing::newScan(sensor_msgs::LaserScan laserScan)
 {
     laserScan_ = laserScan;
+    ROS_INFO_STREAM("NEW SCAN.");
 }
 
 
@@ -169,13 +171,16 @@ double LaserProcessing::normaliseAngle(double theta)
 
 bool LaserProcessing::checkObstacle()
 {
+    ROS_INFO_STREAM("CHECKING FOR OBSTACLE");
     // If obstacle in path, update obstacle_ condition.
     if (obstacle_)
     {
+        ROS_INFO_STREAM("OBSTACLE");
         return true;
     }
     else
     {
+        ROS_INFO_STREAM("NO OBSTACLE");
         return false;
     }
 }

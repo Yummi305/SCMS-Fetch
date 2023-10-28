@@ -1,13 +1,14 @@
 #ifndef FOLLOWTARGET_H
 #define FOLLOWTARGET_H
 
+#include "laserprocessing.h"
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/Vector3Stamped.h>
 #include <sensor_msgs/LaserScan.h>
 #include <tf/transform_listener.h>
-#include "laserprocessing.h"
 #include <geometry_msgs/PoseArray.h>
+#include "std_srvs/SetBool.h"
 #include <iostream>
 #include <cmath>
 #include <chrono>
@@ -35,9 +36,6 @@ class FollowTarget{
         ros::Publisher cmd_vel_pub;
         geometry_msgs::Twist cmd_vel;
         geometry_msgs::Vector3Stamped pose;
-
-        // Threading and conditions
-        std::thread *thread_;
 
         // Laser and range
         sensor_msgs::LaserScan laser_scan_;

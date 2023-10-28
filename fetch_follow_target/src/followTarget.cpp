@@ -1,17 +1,16 @@
 #include "followTarget.h"
+#include "laserprocessing.h"
 
 // FollowTarget Constructor
 FollowTarget::FollowTarget(ros::NodeHandle nh) : nh(nh)
 {
     // ROS Subscriber
-    // laser_subscribe_ = nh.subscribe("orange/laser/scan", 100, &FollowTarget::laserCallback, this);
+    laser_subscribe_ = nh.subscribe("orange/laser/scan", 100, &FollowTarget::laserCallback, this);
 
     // ROS Service
     marker_sub = nh.subscribe("/aruco_single/position", 1000, &FollowTarget::markerCallback, this);
     cmd_vel_pub = nh.advertise<geometry_msgs::Twist>("cmd_vel", 1);
 
-    // Initialise thread.
-    // std::thread(&FollowTarget::run, this);
     sweepComplete = false;
     objectDetected = false;
     fetchMission = true;
@@ -21,10 +20,10 @@ FollowTarget::FollowTarget(ros::NodeHandle nh) : nh(nh)
 // Default destructor when program ends.
 FollowTarget::~FollowTarget()
 {
-    // if (laserProcessingPtr_ != nullptr)
-    // {
-    //     delete laserProcessingPtr_;
-    // }
+    if (laserProcessingPtr_ != nullptr)
+    {
+        delete laserProcessingPtr_;
+    }
 }
 
 void FollowTarget::run()
@@ -35,31 +34,50 @@ void FollowTarget::run()
     {
     ROS_INFO_STREAM("run function while loop");
 
-        if (!fetchMission)
+        if (fetchMission == false)
         {
-            ROS_INFO_STREAM("Fetch not moving forward due to obstacle.");
-
-            // Stop Fetch from driving forward and colliding with obstacle
-            stop();
-            continue;
+            ROS_INFO_STREAM("fetchMission is false.");
         }
         else
         {
-            ROS_INFO_STREAM("Fetch still running.");
+            ROS_INFO_STREAM("fetchMission is true.");
         }
 
-        // // New Laser scan.
-        // LaserProcessing laser;
-
-        // // Process laser reading.
-        // laser.newScan(laser_scan_);
-
-        // // Check if obstacle is blocking robot.
-        // if (laser.checkObstacle())
+        // if (fetchMission == false)
         // {
-        //     ROS_INFO_STREAM("Obstacle detected in path.");
-        //     fetchMission = false;
+        //     ROS_INFO_STREAM("Fetch not moving forward due to obstacle.");
+
+        //     // Stop Fetch from driving forward and colliding with obstacle
+        //     stop();
+        //     continue;
         // }
+        // else
+        // {
+        //     ROS_INFO_STREAM("Fetch still running.");
+        // }
+
+        ROS_INFO_STREAM("About to make laser.");
+        // New Laser scan.
+        LaserProcessing laser;
+
+        ROS_INFO_STREAM("Hopefully a laser has been made before this.");
+
+        ROS_INFO_STREAM("About to make a new laser scan.");
+
+        // Process laser reading.
+        laser.newScan(laser_scan_);
+
+        ROS_INFO_STREAM("Hopepfully a new laser has been made.");
+
+        ROS_INFO_STREAM("About to check for an obstacle.");
+        // Check if obstacle is blocking robot.
+        if (laser.checkObstacle())
+        {
+            ROS_INFO_STREAM("OBSTACLED DETECTED.");
+            // fetchMission = false;
+        } else {
+            ROS_INFO_STREAM("NO OBSTACLE DETECTED.");
+        }
     }
 }
 
