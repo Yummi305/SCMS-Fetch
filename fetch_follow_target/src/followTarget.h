@@ -39,6 +39,9 @@ class FollowTarget{
         // Threading and conditions
         std::thread *thread_;
 
+        // Laser and range
+        sensor_msgs::LaserScan laser_scan_;
+
     private:
         // Laser data
         LaserProcessing *laserProcessingPtr_;

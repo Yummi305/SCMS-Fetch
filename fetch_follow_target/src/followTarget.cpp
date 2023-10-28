@@ -4,7 +4,7 @@
 FollowTarget::FollowTarget(ros::NodeHandle nh) : nh(nh)
 {
     // ROS Subscriber
-    laser_subscribe_ = nh.subscribe("orange/laser/scan", 100, &FollowTarget::laserCallback, this);
+    // laser_subscribe_ = nh.subscribe("orange/laser/scan", 100, &FollowTarget::laserCallback, this);
 
     // ROS Service
     marker_sub = nh.subscribe("/aruco_single/position", 1000, &FollowTarget::markerCallback, this);
@@ -21,17 +21,19 @@ FollowTarget::FollowTarget(ros::NodeHandle nh) : nh(nh)
 // Default destructor when program ends.
 FollowTarget::~FollowTarget()
 {
-    if (laserProcessingPtr_ != nullptr)
-    {
-        delete laserProcessingPtr_;
-    }
+    // if (laserProcessingPtr_ != nullptr)
+    // {
+    //     delete laserProcessingPtr_;
+    // }
 }
 
 void FollowTarget::run()
 {
+    ROS_INFO_STREAM("run function");
     // While loop so that robot is always looking for target.
     while (ros::ok())
     {
+    ROS_INFO_STREAM("run function while loop");
 
         if (!fetchMission)
         {
@@ -46,18 +48,18 @@ void FollowTarget::run()
             ROS_INFO_STREAM("Fetch still running.");
         }
 
-        // New Laser scan.
-        LaserProcessing laser;
+        // // New Laser scan.
+        // LaserProcessing laser;
 
-        // Process laser reading.
-        laser.newScan(laser_scan_);
+        // // Process laser reading.
+        // laser.newScan(laser_scan_);
 
-        // Check if obstacle is blocking robot.
-        if (laser.checkObstacle())
-        {
-            ROS_INFO_STREAM("Obstacle detected in path.");
-            fetchMission = false;
-        }
+        // // Check if obstacle is blocking robot.
+        // if (laser.checkObstacle())
+        // {
+        //     ROS_INFO_STREAM("Obstacle detected in path.");
+        //     fetchMission = false;
+        // }
     }
 }
 
