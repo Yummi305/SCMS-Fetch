@@ -8,10 +8,10 @@ FollowTarget::FollowTarget(ros::NodeHandle nh) : nh(nh)
     laser_subscribe_ = nh.subscribe("orange/laser/scan", 100, &FollowTarget::laserCallback, this);
 
     // ROS Service
-    marker_sub = nh.subscribe("/aruco_single/position", 1000, &FollowTarget::tagCallback, this);
+    marker_sub = nh.subscribe("/aruco_single/pose", 1000, &FollowTarget::tagCallback, this);
     cmd_vel_pub = nh.advertise<geometry_msgs::Twist>("cmd_vel", 1);
 
-    ARUCO.distanceLimit = 1.0;
+    AT.distanceLimit = 1.0;
 
     duration = start - start;
 
@@ -31,50 +31,48 @@ FollowTarget::~FollowTarget()
     }
 }
 
-void FollowTarget::tagCallback(const geometry_msgs::Vector3Stamped::ConstPtr &msg)
-//void FollowTarget::tagCallback(const geometry_msgs::PoseStamped::ConstPtr &msg)
+//void FollowTarget::tagCallback(const geometry_msgs::Vector3Stamped::ConstPtr &msg)
+void FollowTarget::tagCallback(const geometry_msgs::PoseStamped::ConstPtr &msg)
 
 {
-    ROS_INFO_STREAM("test");
-
-    if (!ARUCO.detected)
+    if (!AT.detected)
     {
-        ARUCO.detected = true;
+        AT.detected = true;
         searchReported = false;
         ROS_INFO_STREAM("Guider has been detected");
         sweepComplete = false;
     }
 
-    ARUCO.pose.vector.x = msg->vector.z;
-    ARUCO.pose.vector.y = msg->vector.x;
-    ARUCO.pose.vector.z = msg->vector.y;
+    AT.pose.vector.x = msg->vector.z;
+    AT.pose.vector.y = msg->vector.x;
+    AT.pose.vector.z = msg->vector.y;
 
-    ARUCO.shortDist = roundf64(sqrt(pow(ARUCO.pose.vector.x, 2) + pow(ARUCO.pose.vector.y, 2)) * 10) / 10;
-    ARUCO.thresholdErr = 0.01;
+    AT.shortDist = roundf64(sqrt(pow(AT.pose.vector.x, 2) + pow(AT.pose.vector.y, 2)) * 10) / 10;
+    AT.thresholdErr = 0.01;
 
-    if (ARUCO.shortDist <= (ARUCO.distanceLimit + ARUCO.thresholdErr) && ARUCO.shortDist >= (ARUCO.distanceLimit - ARUCO.thresholdErr))
+    if (AT.shortDist <= (AT.distanceLimit + AT.thresholdErr) && AT.shortDist >= (AT.distanceLimit - AT.thresholdErr))
     {
 
         cmd_vel.linear.x = 0.0;
         cmd_vel.angular.z = 0.0;
-        if(!ARUCO.reached){
+        if(!AT.reached){
             ROS_INFO_STREAM("Guider stationary");
-            ARUCO.reached = true;
+            AT.reached = true;
         }
     }
 
     // adjust linear angular velocity
     else
     {
-        ARUCO.reached = false;
+        AT.reached = false;
         if (!objectDetected)
         {
-            double error = ARUCO.shortDist - ARUCO.distanceLimit;
-            if (ARUCO.shortDist > ARUCO.distanceLimit * 1.5)
+            double error = AT.shortDist - AT.distanceLimit;
+            if (AT.shortDist > AT.distanceLimit * 1.5)
             {
                 cmd_vel.linear.x = error;
             }
-            else if (ARUCO.shortDist < ARUCO.distanceLimit* 0.95)
+            else if (AT.shortDist < AT.distanceLimit* 0.95)
             {
                 cmd_vel.linear.x = -0.3;
             }
@@ -83,12 +81,12 @@ void FollowTarget::tagCallback(const geometry_msgs::Vector3Stamped::ConstPtr &ms
 
 
 
-            if (ARUCO.pose.vector.y == 0)
+            if (AT.pose.vector.y == 0)
             {
                 cmd_vel.angular.z = 0;
             }
             else
-                cmd_vel.angular.z = -ARUCO.pose.vector.y;
+                cmd_vel.angular.z = -AT.pose.vector.y;
         }
     }
 
@@ -104,42 +102,37 @@ void FollowTarget::run()
     // While loop so that robot is always looking for target.
     while (ros::ok())
     {
-
         if (duration > ros::Duration(20.0)){
             start = ros::Time::now();
         }
 
         duration = ros::Time::now() - start;
 
-        if (duration >= ros::Duration(2.0) && duration <= ros::Duration(8.0) && !ARUCO.detected && !sweepComplete){
+        if (duration >= ros::Duration(2.0) && duration <= ros::Duration(8.0) && !AT.detected && !sweepComplete){
             cmd_vel.angular.z = -1.57;
             cmd_vel.linear.x = 0;
             cmd_vel_pub.publish(cmd_vel);
             if(searchReported){
-                ROS_INFO_STREAM("Searching for ArUco marker");
+                ROS_INFO_STREAM("Searching for AT");
                 searchReported = true;
             }
         }
 
-        if (duration > ros::Duration(8.0) && duration <= ros::Duration(14.0) && !ARUCO.detected && !sweepComplete){
+        if (duration > ros::Duration(8.0) && duration <= ros::Duration(14.0) && !AT.detected && !sweepComplete){
             cmd_vel.angular.z = 1.57;
             cmd_vel.linear.x = 0.0;
             cmd_vel_pub.publish(cmd_vel);
         }
 
-        ROS_INFO_STREAM("what is detection: " << ARUCO.detected);
-        ROS_INFO_STREAM("what is sweep: " << sweepComplete);
-        ROS_INFO_STREAM("what is search: " << searchReported);
-
-        if (duration == ros::Duration(14.0) && !ARUCO.detected && !sweepComplete){
+        if (duration == ros::Duration(14.0) && !AT.detected && !sweepComplete){
             sweepComplete = true;
             searchReported = false;
-            ROS_INFO_STREAM("NO MARKER FOUND. STOPPING SEARCH");
+            ROS_INFO_STREAM("NO TAG FOUND. STOPPING SEARCH");
         }
 
-        if (duration >= ros::Duration(3.0) && ARUCO.detected){
-            ROS_INFO_STREAM("NO MARKER FOUND, STOPPING OPERATION");
-            ARUCO.detected = false;
+        if (duration >= ros::Duration(3.0) && AT.detected){
+            ROS_INFO_STREAM("NO TAG FOUND, STOPPING OPERATION");
+            AT.detected = false;
             sweepComplete = false;
             start = ros::Time::now();
         }

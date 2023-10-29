@@ -1,0 +1,136 @@
+#include "followTarget.h"
+#include "laserprocessing.h"
+
+// FollowTarget Constructor
+FollowTarget::FollowTarget(ros::NodeHandle nh) : nh(nh)
+{
+    // ROS Subscriber
+    laser_subscribe_ = nh.subscribe("orange/laser/scan", 100, &FollowTarget::laserCallback, this);
+
+    // ROS Service
+    marker_sub = nh.subscribe("/aruco_single/pose", 1000, &FollowTarget::tagCallback, this);
+    cmd_vel_pub = nh.advertise<geometry_msgs::Twist>("cmd_vel", 1);
+    listener = new tf::TransformListener();
+
+    ARUCO.distanceLimit = 1.0;
+
+    duration = start - start;
+
+    sweepComplete = false;
+    objectDetected = false;
+    searchReported = false;
+
+    ROS_INFO_STREAM("FollowTarget Fetch created");
+}
+
+// Default destructor when program ends.
+FollowTarget::~FollowTarget()
+{
+    if (laserProcessingPtr_ != nullptr)
+    {
+        delete laserProcessingPtr_;
+    }
+}
+
+void FollowTarget::tagCallback(const geometry_msgs::PoseStamped::ConstPtr &msg)
+{
+
+    double distance = DistancetoMarker(msg->pose);
+
+    ROS_INFO_STREAM("TEST");
+
+    if (!ARUCO.detected)
+    {
+        ARUCO.detected = true;
+        searchReported = false;
+        ROS_INFO_STREAM("Guider has been detected");
+        sweepComplete = false;
+    }
+
+    if (distance > 1.0){
+        FollowTarget::followAruco(msg->pose);
+    }
+    else
+    {
+        FollowTarget::stop();
+    }
+
+    start = ros::Time::now();
+    
+}
+
+double FollowTarget::DistancetoMarker(const geometry_msgs::Pose &msg){
+    double robot_x = 0.0;
+    double robot_y = 0.0;
+    double robot_z = 0.0;
+
+    double marker_x = msg.position.x;
+    double marker_y = msg.position.y;
+    double marker_z = msg.position.z;
+
+    double distance = std::sqrt(std::pow(marker_x - robot_x,2)+std::pow(marker_y - robot_y,2)+std::pow(marker_z - robot_z,2));
+    return distance;
+}
+
+void FollowTarget::followAruco(const geometry_msgs::Pose &msg){
+    cmd_vel.linear.x = 0.2;
+    cmd_vel.angular.z = 0.1;
+    cmd_vel_pub.publish(cmd_vel);
+}
+
+void FollowTarget::stop(){
+    cmd_vel.linear.x = 0.0;
+    cmd_vel.angular.z = 0.0;
+    cmd_vel_pub.publish(cmd_vel);
+}
+
+
+void FollowTarget::run()
+{
+    ROS_INFO_STREAM("run function");
+    // While loop so that robot is always looking for target.
+    while (ros::ok())
+    {
+        if (duration > ros::Duration(20.0)){
+            start = ros::Time::now();
+        }
+
+        duration = ros::Time::now() - start;
+
+        if (duration >= ros::Duration(2.0) && duration <= ros::Duration(8.0) && !ARUCO.detected && !sweepComplete){
+            cmd_vel.angular.z = -1.57;
+            cmd_vel.linear.x = 0;
+            cmd_vel_pub.publish(cmd_vel);
+            if(searchReported){
+                ROS_INFO_STREAM("Searching for AT");
+                searchReported = true;
+            }
+        }
+
+        if (duration > ros::Duration(8.0) && duration <= ros::Duration(14.0) && !ARUCO.detected && !sweepComplete){
+            cmd_vel.angular.z = 1.57;
+            cmd_vel.linear.x = 0.0;
+            cmd_vel_pub.publish(cmd_vel);
+        }
+
+        if (duration == ros::Duration(14.0) && !ARUCO.detected && !sweepComplete){
+            sweepComplete = true;
+            searchReported = false;
+            ROS_INFO_STREAM("NO TAG FOUND. STOPPING SEARCH");
+        }
+
+        if (duration >= ros::Duration(3.0) && ARUCO.detected){
+            ROS_INFO_STREAM("NO TAG FOUND, STOPPING OPERATION");
+            ARUCO.detected = false;
+            sweepComplete = false;
+            start = ros::Time::now();
+        }
+
+    }
+}
+
+void FollowTarget::laserCallback(const sensor_msgs::LaserScanPtr &msg)
+{
+    laser_scan_ = *msg;
+}
+

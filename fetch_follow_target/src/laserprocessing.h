@@ -5,6 +5,7 @@
 #include <geometry_msgs/Pose.h>
 #include <math.h>
 #include "tf/transform_datatypes.h"
+#include "std_srvs/SetBool.h"
 
 class LaserProcessing
 {
