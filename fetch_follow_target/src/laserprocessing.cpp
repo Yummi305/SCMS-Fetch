@@ -30,10 +30,11 @@ void LaserProcessing::reviewLaserReadings()
                     int obstacleReading = laserReadings.at(laserReadings.size() / 2);
                     double distanceInfront = laserScan_.ranges.at(obstacleReading);
                     // Check for obstacle blocking path.
-                    if (obstacleReading > 50 && distanceInfront < 5)
+                    if (obstacleReading > 30 && distanceInfront < 0.7)
                     {
                         obstacle_ = true;
                     }
+                    else obstacle_ = false;
                 // }
                 laserReadings.clear();
                 validReading = false;

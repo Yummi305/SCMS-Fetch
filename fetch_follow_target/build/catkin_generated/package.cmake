@@ -1,6 +1,6 @@
 set(_CATKIN_CURRENT_PACKAGE "fetch_follow_target")
 set(fetch_follow_target_VERSION "1.0.0")
-set(fetch_follow_target_MAINTAINER "Dan McMahon <daniel.mcmahon3434@gmail.com>, Dennis <TODO@DENNIS.com>, Jen <jennifer.r.wilson-1@student.uts.edu.au>")
+set(fetch_follow_target_MAINTAINER "Dan McMahon <daniel.mcmahon3434@gmail.com>, Dennis <TODO@DENNIS.com>, Jen <TODO@JEN.com>")
 set(fetch_follow_target_PACKAGE_FORMAT "2")
 set(fetch_follow_target_BUILD_DEPENDS "angles" "gazebo_dev" "control_toolbox" "boost" "gazebo_plugins" "gazebo_ros" "robot_controllers" "robot_controllers_interface" "roscpp" "std_msgs" "sensor_msgs" "geometry_msgs" "nav_msgs" "tf")
 set(fetch_follow_target_BUILD_EXPORT_DEPENDS "control_toolbox" "boost" "gazebo_plugins" "gazebo_ros" "robot_controllers" "robot_controllers_interface" "roscpp" "std_msgs" "sensor_msgs" "geometry_msgs" "nav_msgs" "tf")

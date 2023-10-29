@@ -33,7 +33,8 @@ FollowTarget::~FollowTarget()
 
 void FollowTarget::tagCallback(const geometry_msgs::Vector3Stamped::ConstPtr &msg)
 {
-    ROS_INFO_STREAM("test");
+
+    double distance = DistancetoMarker(msg->vector);
 
     if (!ARUCO.detected)
     {
@@ -43,56 +44,50 @@ void FollowTarget::tagCallback(const geometry_msgs::Vector3Stamped::ConstPtr &ms
         sweepComplete = false;
     }
 
-    ARUCO.pose.vector.x = msg->vector.z;
-    ARUCO.pose.vector.y = msg->vector.x;
-    ARUCO.pose.vector.z = msg->vector.y;
-
-    ARUCO.shortDist = roundf64(sqrt(pow(ARUCO.pose.vector.x, 2) + pow(ARUCO.pose.vector.y, 2)) * 10) / 10;
-    ARUCO.thresholdErr = 0.01;
-
-    if (ARUCO.shortDist <= (ARUCO.distanceLimit + ARUCO.thresholdErr) && ARUCO.shortDist >= (ARUCO.distanceLimit - ARUCO.thresholdErr))
-    {
-
-        cmd_vel.linear.x = 0.0;
-        cmd_vel.angular.z = 0.0;
-        if(!ARUCO.reached){
-            ROS_INFO_STREAM("Guider stationary");
-            ARUCO.reached = true;
-        }
+    if (distance > 1.0){
+        FollowTarget::followAruco(msg->vector);
     }
-
-    // adjust linear angular velocity
     else
     {
-        ARUCO.reached = false;
-        if (!objectDetected)
-        {
-            double error = ARUCO.shortDist - ARUCO.distanceLimit;
-            if (ARUCO.shortDist > ARUCO.distanceLimit * 1.5)
-            {
-                cmd_vel.linear.x = error;
-            }
-            else if (ARUCO.shortDist < ARUCO.distanceLimit* 0.95)
-            {
-                cmd_vel.linear.x = -0.3;
-            }
-            else
-                cmd_vel.linear.x = error / 2;
-
-
-
-            if (ARUCO.pose.vector.y == 0)
-            {
-                cmd_vel.angular.z = 0;
-            }
-            else
-                cmd_vel.angular.z = -ARUCO.pose.vector.y;
-        }
+        FollowTarget::stop();
     }
 
-    cmd_vel_pub.publish(cmd_vel);
-
     start = ros::Time::now();
+    
+}
+
+double FollowTarget::DistancetoMarker(const geometry_msgs::Vector3 &msg){
+    // Fetch starting coords
+    ARUCO.robot_x = 0.0;
+    ARUCO.robot_y = 0.0;
+    ARUCO.robot_z = 0.0;
+
+    //Aruco coords
+    ARUCO.marker_x = msg.z;
+    ARUCO.marker_y = msg.x;
+    ARUCO.marker_z = msg.y;
+
+    //Euclidean distance formula
+    double distance = sqrt(pow(ARUCO.marker_x - ARUCO.robot_x,2)
+    +pow(ARUCO.marker_y - ARUCO.robot_y,2)
+    +pow(ARUCO.marker_z - ARUCO.robot_z,2));
+
+    return distance;
+}
+
+void FollowTarget::followAruco(const geometry_msgs::Vector3 &msg){
+
+    double maxAngularVel = 1.0;
+
+    cmd_vel.linear.x = 0.2;
+
+    if(ARUCO.marker_y == 0){
+        cmd_vel.angular.z = 0;
+    }
+    else cmd_vel.angular.z = -ARUCO.marker_y;
+
+    //cmd_vel.angular.z = -ARUCO.pose.vector.y;
+    cmd_vel_pub.publish(cmd_vel);
 }
 
 
@@ -102,6 +97,7 @@ void FollowTarget::run()
     // While loop so that robot is always looking for target.
     while (ros::ok())
     {
+        bool object;
 
         // New Laser scan.
         LaserProcessing laser;
@@ -112,11 +108,14 @@ void FollowTarget::run()
         // Analyse new laser reading.
         laser.reviewLaserReadings();
 
+        object = laser.checkObstacle();
+
         // Check if obstacle is blocking robot path.
-        if (laser.checkObstacle())
+        if (object)
         {
             ROS_INFO_STREAM("OBSTACLED DETECTED IN PATH.");
             stop();
+
         } else {
             ROS_INFO_STREAM("NO OBSTACLE DETECTED.");
         }
@@ -166,5 +165,7 @@ void FollowTarget::laserCallback(const sensor_msgs::LaserScanPtr &msg)
 
 void FollowTarget::stop()
 {
-
+    cmd_vel.linear.x = 0.0;
+    cmd_vel.angular.z = 0.0;
+    cmd_vel_pub.publish(cmd_vel);
 }

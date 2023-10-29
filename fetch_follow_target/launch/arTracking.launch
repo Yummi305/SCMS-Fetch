@@ -1,0 +1,7 @@
+<launch>
+
+<node name="camera" pkg="fetch_gazebo" type="camera_node" output="screen" />
+<node name="april_tag_detection" pkg="vision_visp" type="april_tag_detection" output="screen" />
+<node name="rqt_image_view" pkg="image_view" type="image_view" args="/head_camera/rgb/" respawn="true" />
+
+</launch>

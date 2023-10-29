@@ -24,11 +24,10 @@ class FollowTarget{
         ~FollowTarget();
         void run();
         void laserCallback(const sensor_msgs::LaserScanPtr &msg);
-        //void tagCallback(const geometry_msgs::PoseStamped::ConstPtr &msg); //reference point to input variable
         void tagCallback(const geometry_msgs::Vector3Stamped::ConstPtr &msg);
-        // void stop();
-        // void followAruco(const geometry_msgs::Pose &msg);
-        // double DistancetoMarker(const geometry_msgs::Pose &msg);
+        void stop();
+        void followAruco(const geometry_msgs::Vector3 &msg);
+        double DistancetoMarker(const geometry_msgs::Vector3 &msg);
         
     protected:
         // ROS
@@ -58,6 +57,8 @@ class FollowTarget{
             double thresholdErr;
             bool detected;
             bool reached;
+            double marker_x,marker_y,marker_z;
+            double robot_x,robot_y,robot_z;
         };
 
         Tag ARUCO;
