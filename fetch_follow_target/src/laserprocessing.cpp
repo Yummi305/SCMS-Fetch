@@ -4,7 +4,7 @@
 
 using namespace std;
 
-LaserProcessing::LaserProcessing() : cone_distance_(0.3f)
+LaserProcessing::LaserProcessing() : euclidean_distance_(0.3f)
 {
     ROS_INFO_STREAM("LASER CREATED.");
 }
@@ -15,11 +15,11 @@ void LaserProcessing::newScan(sensor_msgs::LaserScan laserScan)
     ROS_INFO_STREAM("NEW SCAN.");
 }
 
-
-void LaserProcessing::getConeLocations()
+void LaserProcessing::reviewLaserReadings()
 {
+    ROS_INFO_STREAM("looking at laser msgs");
     // Initialise values.
-    std::vector<int> coneReadings;
+    std::vector<int> laserReadings;
     geometry_msgs::Point conePoint;
     bool validReading = false;
 
@@ -31,30 +31,21 @@ void LaserProcessing::getConeLocations()
             // End of segment.
             if (validReading)
             {
-                // Fewer range readings means that object is likely a cone.
-                if (coneReadings.size() < 30)
-                {
-                    // Convert laser reading from polar coordinate to cartesian position.
-                    conePoint = polarToCart(coneReadings.at(coneReadings.size() / 2));
-                    // Push into cones_ container.
-                    cones_.push_back(std::make_pair(conePoint.x, conePoint.y));
-                }
-                // Larger range readings means that object is likely an obstacle.
-                else
-                {
-                    int obstacleReading = coneReadings.at(coneReadings.size() / 2);
+                    int obstacleReading = laserReadings.at(laserReadings.size() / 2);
                     double distanceInfront = laserScan_.ranges.at(obstacleReading);
                     // Check for obstacle blocking path.
+                    ROS_INFO_STREAM("valid reading");
                     if (obstacleReading > 50 && distanceInfront < 5)
                     {
                         obstacle_ = true;
                     }
-                }
-                coneReadings.clear();
+                // }
+                laserReadings.clear();
                 validReading = false;
             }
             else
             {
+                ROS_INFO_STREAM("NOT VALID READING");
                 continue;
             }
         }
@@ -67,43 +58,38 @@ void LaserProcessing::getConeLocations()
                 double displacement = laserScan_.ranges.at(i) - laserScan_.ranges.at(i - 1);
 
                 // Classify segments based on the 0.3m Euclidean distance between successive cones.
-                if (displacement > cone_distance_)
+                if (displacement > euclidean_distance_)
                 {
-                    coneReadings.clear();
+                    laserReadings.clear();
                     validReading = false;
                     continue;
                 }
-                else if (displacement < -cone_distance_)
+                else if (displacement < -euclidean_distance_)
                 {
-                    if (coneReadings.size() < 15)
+                    if (laserReadings.size() < 15)
                     {
-                        coneReadings.push_back(i);
-                        conePoint = polarToCart(coneReadings.at(coneReadings.size() / 2));
-                        cones_.push_back(std::make_pair(conePoint.x, conePoint.y));
-
-                        coneReadings.clear();
+                        laserReadings.push_back(i);
+                        conePoint = polarToCart(laserReadings.at(laserReadings.size() / 2));
+                        laserReadings.clear();
                         validReading = false;
                     }
                 }
                 // Continue processing segment.
                 else
                 {
-                    coneReadings.push_back(i);
+                    laserReadings.push_back(i);
                     validReading = true;
                 }
             }
             // Begin new segment.
             else
             {
-                coneReadings.push_back(i);
+                laserReadings.push_back(i);
                 validReading = true;
             }
         }
     }
 }
-
-
-
 
 geometry_msgs::Point LaserProcessing::polarToCart(unsigned int index)
 {
@@ -116,58 +102,6 @@ geometry_msgs::Point LaserProcessing::polarToCart(unsigned int index)
     cart.z = 0;
     return cart;
 }
-
-
-std::vector<geometry_msgs::Point> LaserProcessing::getGlobalPoints(std::vector<geometry_msgs::Point> cone_points, geometry_msgs::Pose pose)
-{
-    // Initialise global points container.
-    std::vector<geometry_msgs::Point> points;
-
-    // Convert points in local plane to points in global plane and push into global points container.
-    for (int i = 0; i < cone_points.size(); ++i)
-    {
-        geometry_msgs::Point globalPoint = localToGlobal(cone_points.at(i), pose);
-        points.push_back(globalPoint);
-    }
-
-    // for (int i = 0; i < points.size(); ++i)
-    // {
-        // ROS_INFO_STREAM("cone " << i << " x,y " << points.at(i).x << "," << points.at(i).y);
-    // }
-
-    return points;
-}
-
-
-geometry_msgs::Point LaserProcessing::localToGlobal(geometry_msgs::Point localPoint, geometry_msgs::Pose pose)
-{
-    geometry_msgs::Point point;
-    double yaw = normaliseAngle(tf::getYaw(pose.orientation));
-
-    point.x = (localPoint.x * cos(yaw) - localPoint.y * sin(yaw) + pose.position.x + 3.7 * cos(yaw));
-    point.y = (localPoint.x * sin(yaw) + localPoint.y * cos(yaw) + pose.position.y + 3.7 * sin(yaw));
-
-    // ROS_INFO_STREAM("cone points converted to global");
-    return point;
-}
-
-
-double LaserProcessing::normaliseAngle(double theta)
-{
-    // If angle is out of range, normalise it.
-    if (theta > (2 * M_PI))
-        theta = theta - (2 * M_PI);
-    else if (theta < 0)
-        theta = theta + (2 * M_PI);
-
-    if (theta > M_PI)
-    {
-        theta = -((2 * M_PI) - theta);
-    }
-
-    return theta;
-}
-
 
 bool LaserProcessing::checkObstacle()
 {

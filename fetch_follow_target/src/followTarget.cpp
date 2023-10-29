@@ -5,7 +5,7 @@
 FollowTarget::FollowTarget(ros::NodeHandle nh) : nh(nh)
 {
     // ROS Subscriber
-    laser_subscribe_ = nh.subscribe("orange/laser/scan", 100, &FollowTarget::laserCallback, this);
+    laser_subscribe_ = nh.subscribe("/base_scan_raw", 100, &FollowTarget::laserCallback, this);
 
     // ROS Service
     marker_sub = nh.subscribe("/aruco_single/position", 1000, &FollowTarget::tagCallback, this);
@@ -105,6 +105,24 @@ void FollowTarget::run()
     while (ros::ok())
     {
 
+        // New Laser scan.
+        LaserProcessing laser;
+
+        // Get new laser reading.
+        laser.newScan(laser_scan_);
+
+        // Analyse new laser reading.
+        laser.reviewLaserReadings();
+
+        // Check if obstacle is blocking robot path.
+        if (laser.checkObstacle())
+        {
+            ROS_INFO_STREAM("OBSTACLED DETECTED IN PATH.");
+            stop();
+        } else {
+            ROS_INFO_STREAM("NO OBSTACLE DETECTED.");
+        }
+
         if (duration > ros::Duration(20.0)){
             start = ros::Time::now();
         }
@@ -127,10 +145,6 @@ void FollowTarget::run()
             cmd_vel_pub.publish(cmd_vel);
         }
 
-        ROS_INFO_STREAM("what is detection: " << ARUCO.detected);
-        ROS_INFO_STREAM("what is sweep: " << sweepComplete);
-        ROS_INFO_STREAM("what is search: " << searchReported);
-
         if (duration == ros::Duration(14.0) && !ARUCO.detected && !sweepComplete){
             sweepComplete = true;
             searchReported = false;
@@ -143,50 +157,7 @@ void FollowTarget::run()
             sweepComplete = false;
             start = ros::Time::now();
         }
-        // if (fetchMission == false)
-        // {
-        //     ROS_INFO_STREAM("fetchMission is false.");
-        // }
-        // else
-        // {
-        //     ROS_INFO_STREAM("fetchMission is true.");
-        // }
-
-        // if (fetchMission == false)
-        // {
-        //     ROS_INFO_STREAM("Fetch not moving forward due to obstacle.");
-
-        //     // Stop Fetch from driving forward and colliding with obstacle
-        //     stop();
-        //     continue;
-        // }
-        // else
-        // {
-        //     ROS_INFO_STREAM("Fetch still running.");
-        // }
-
-        // ROS_INFO_STREAM("About to make laser.");
-        // // New Laser scan.
-        // LaserProcessing laser;
-
-        // ROS_INFO_STREAM("Hopefully a laser has been made before this.");
-
-        // ROS_INFO_STREAM("About to make a new laser scan.");
-
-        // // Process laser reading.
-        // laser.newScan(laser_scan_);
-
-        // ROS_INFO_STREAM("Hopepfully a new laser has been made.");
-
-        // ROS_INFO_STREAM("About to check for an obstacle.");
-        // // Check if obstacle is blocking robot.
-        // if (laser.checkObstacle())
-        // {
-        //     ROS_INFO_STREAM("OBSTACLED DETECTED.");
-        //     // fetchMission = false;
-        // } else {
-        //     ROS_INFO_STREAM("NO OBSTACLE DETECTED.");
-        // }
+      
     }
 }
 
@@ -195,3 +166,7 @@ void FollowTarget::laserCallback(const sensor_msgs::LaserScanPtr &msg)
     laser_scan_ = *msg;
 }
 
+void FollowTarget::stop()
+{
+
+}
