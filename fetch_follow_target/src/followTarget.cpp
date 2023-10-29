@@ -32,8 +32,6 @@ FollowTarget::~FollowTarget()
 }
 
 void FollowTarget::tagCallback(const geometry_msgs::Vector3Stamped::ConstPtr &msg)
-//void FollowTarget::tagCallback(const geometry_msgs::PoseStamped::ConstPtr &msg)
-
 {
     ROS_INFO_STREAM("test");
 

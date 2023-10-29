@@ -27,13 +27,6 @@ public:
    */
   void reviewLaserReadings();
 
-  /*! @brief Returns the cartesian position of laser reading at specific index
-   * converted from polar coordinats stored in the #laserScan_
-   *  @param[in] index - the reading needing conversion
-   *  @return position cartesian values
-   */
-  geometry_msgs::Point polarToCart(unsigned int index);
-
   bool checkObstacle();
 
 private:
