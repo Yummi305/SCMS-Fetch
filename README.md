@@ -24,11 +24,13 @@ git clone https://github.com/Yummi305/SCMS-Fetch
 cd ~/catkin_ws
 catkin_make
 ```
+
 ```bash
 cd ~/catkin_ws/src
 git clone https://github.com/pal-robotics/aruco_ros
 cd ~/catkin_ws
 catkin_make
+```
 
 ## Operation
 Once the required packages and dependancies have been acquired, the following commands will launch the world, fetch robot and guider robot.
