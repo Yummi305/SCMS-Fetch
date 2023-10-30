@@ -29,7 +29,7 @@ class FollowTarget{
         void followAruco(const geometry_msgs::Vector3 &msg, double distance);
         double DistancetoMarker(const geometry_msgs::Vector3 &msg);
         void moveBackward(double distance);
-        double PDController(double error);
+        double PIDController(double error);
         
     protected:
         // ROS
