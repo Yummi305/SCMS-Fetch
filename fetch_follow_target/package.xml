@@ -11,8 +11,6 @@
 
   <license>BSD, MIT, Boost Software License, GPLv2, GPLv3, LPGv2.1, LPGv3</license>
 
-
-
   <buildtool_depend>catkin</buildtool_depend>
 
   <build_depend>angles</build_depend>

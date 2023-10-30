@@ -11,12 +11,18 @@ FollowTarget::FollowTarget(ros::NodeHandle nh) : nh(nh)
     marker_sub = nh.subscribe("/aruco_single/position", 1000, &FollowTarget::tagCallback, this);
     cmd_vel_pub = nh.advertise<geometry_msgs::Twist>("cmd_vel", 1);
 
-    ARUCO.distanceLimit = 1.0;
+    // PD Controller params
+    //ARUCO.distanceLimit = 1.0;
+    ARUCO.prev_error = 0.0;
+    ARUCO.integral_ = 0.0;
+    ARUCO.kp = 0.5; // proportional gain
+    ARUCO.kd = 0.1; // derivative gain
+    ARUCO.ki = 0.01; // integral gain
 
     duration = start - start;
 
     sweepComplete = false;
-    objectDetected = false;
+    //objectDetected = false;
     searchReported = false;
 
     ROS_INFO_STREAM("FollowTarget Fetch created");
@@ -44,13 +50,13 @@ void FollowTarget::tagCallback(const geometry_msgs::Vector3Stamped::ConstPtr &ms
         sweepComplete = false;
     }
 
-    if (distance > 1.0){
-        FollowTarget::followAruco(msg->vector);
+    if (distance > 1.1){
+        FollowTarget::followAruco(msg->vector,distance);
     }
-    else
-    {
-        FollowTarget::stop();
+    else if (distance < 0.9){
+        FollowTarget::moveBackward(distance);
     }
+    else FollowTarget::stop();
 
     start = ros::Time::now();
     
@@ -63,6 +69,7 @@ double FollowTarget::DistancetoMarker(const geometry_msgs::Vector3 &msg){
     ARUCO.robot_z = 0.0;
 
     //Aruco coords
+    //Translate to camera frame of reference (look at rqt_image_view)
     ARUCO.marker_x = msg.z;
     ARUCO.marker_y = msg.x;
     ARUCO.marker_z = msg.y;
@@ -75,21 +82,41 @@ double FollowTarget::DistancetoMarker(const geometry_msgs::Vector3 &msg){
     return distance;
 }
 
-void FollowTarget::followAruco(const geometry_msgs::Vector3 &msg){
+void FollowTarget::followAruco(const geometry_msgs::Vector3 &msg, double distance){
 
-    double maxAngularVel = 1.0;
+    ARUCO.desired_velocity = FollowTarget::PDController(distance);
 
-    cmd_vel.linear.x = 0.2;
+    cmd_vel.linear.x = ARUCO.desired_velocity;
 
     if(ARUCO.marker_y == 0){
         cmd_vel.angular.z = 0;
     }
-    else cmd_vel.angular.z = -ARUCO.marker_y;
+    else cmd_vel.angular.z = -ARUCO.marker_y; //inverse direction
 
-    //cmd_vel.angular.z = -ARUCO.pose.vector.y;
     cmd_vel_pub.publish(cmd_vel);
 }
 
+void FollowTarget::moveBackward(double distance){
+
+    ARUCO.desired_velocity = FollowTarget::PDController(distance);
+
+    cmd_vel.linear.x = -ARUCO.desired_velocity;
+    cmd_vel_pub.publish(cmd_vel);
+}
+
+double FollowTarget::PDController(double error){
+
+    ARUCO.integral_ += error;
+    double p_term = ARUCO.kp * error;
+    double d_term = ARUCO.kd * (error - ARUCO.prev_error);
+    double i_term = ARUCO.ki * ARUCO.integral_;
+    ARUCO.prev_error = error;
+
+    ARUCO.desired_velocity = p_term + d_term;
+
+    return ARUCO.desired_velocity;
+
+}
 
 void FollowTarget::run()
 {

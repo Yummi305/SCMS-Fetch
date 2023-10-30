@@ -18,7 +18,7 @@ find_package(catkin
     roslib
     control_msgs
     geometry_msgs
-    cv_bridge
+    # cv_bridge
     image_transport
     message_generation
 )
@@ -26,7 +26,7 @@ find_package(catkin
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
-  ${Boost_INCLUDE_DIRS}
+  # ${Boost_INCLUDE_DIRS}
   ${GAZEBO_INCLUDE_DIRS}
 )
 
@@ -109,9 +109,9 @@ include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
   ${GAZEBO_INCLUDE_DIRS}
-  ${Boost_INCLUDE_DIRS}
-  ${OpenCV_INCLUDE_DIRS}
-  ${EIGEN3_INCLUDE_DIRS}
+  # ${Boost_INCLUDE_DIRS}
+  # ${OpenCV_INCLUDE_DIRS}
+  # ${EIGEN3_INCLUDE_DIRS}
 )
 
 ################################################################################
@@ -137,7 +137,6 @@ install(
 )
 
 catkin_install_python(PROGRAMS
-  nodes/turtlebot3_teleop_key
   nodes/teleop_twist_key.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
