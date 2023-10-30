@@ -84,7 +84,7 @@ double FollowTarget::DistancetoMarker(const geometry_msgs::Vector3 &msg){
 
 void FollowTarget::followAruco(const geometry_msgs::Vector3 &msg, double distance){
 
-    ARUCO.desired_velocity = FollowTarget::PDController(distance);
+    ARUCO.desired_velocity = FollowTarget::PIDController(distance);
 
     cmd_vel.linear.x = ARUCO.desired_velocity;
 
@@ -98,13 +98,13 @@ void FollowTarget::followAruco(const geometry_msgs::Vector3 &msg, double distanc
 
 void FollowTarget::moveBackward(double distance){
 
-    ARUCO.desired_velocity = FollowTarget::PDController(distance);
+    ARUCO.desired_velocity = FollowTarget::PIDController(distance);
 
     cmd_vel.linear.x = -ARUCO.desired_velocity;
     cmd_vel_pub.publish(cmd_vel);
 }
 
-double FollowTarget::PDController(double error){
+double FollowTarget::PIDController(double error){
 
     ARUCO.integral_ += error;
     double p_term = ARUCO.kp * error;
