@@ -33,8 +33,8 @@ catkin_make
 ```
 
 ## Operation
-Once the required packages and dependancies have been acquired, the following commands will launch the world, fetch robot and guider robot.
-* Open world with Fetch and Turtlebot
+Once the required packages and dependancies have been acquired, the following commands will launch the world, fetch robot and guider robot as well as the controller for the turtlebot.
+* Open world with Fetch and Turtlebot, which also runs the command to control the turtlebot (using joystick controller) and RVIZ
 ```bash
 roslaunch fetch_follow_target main.launch
 ```
@@ -42,6 +42,7 @@ roslaunch fetch_follow_target main.launch
 ```bash
 roslaunch fetch_follow_target followTarget.launch
 ```
-runs code that allows fetch to follow marker
+
+
 
 
